@@ -10,6 +10,7 @@ _ = require "underscore"
 # How to use: 
 # 1. Setup mongoose connect as usual: 
 #
+#   mongoose = require("mongoose");
 #   mongoose.connect("mongodb://localhost/mongoose-redis-test")
 #
 # 2. Create your schemas as usual: 
@@ -34,7 +35,17 @@ _ = require "underscore"
 #     
 #     Example = mongoose.model('Example', ExampleSchema)
 #
-# 5. Make a query! 
+# 5. Setup your mongooseCache options
+#
+#    mongooseRedisCache = require("mongoose-redis-cache");
+#    mongooseRedisCache(mongoose, {
+#       host: "redisHost",
+#       port: "redisPort",
+#       pass: "redisPass",
+#       options: "redisOptions"
+#     })
+# 
+# 6. Make a query! 
 #     
 #    query = Example.find({}) 
 #    query.where("field1", "foo")
@@ -43,8 +54,6 @@ _ = require "underscore"
 #    query.exec(function(err, result){
 #       # Do whatever here! 
 #    });
-
-
 
 
 # Let's start the party!

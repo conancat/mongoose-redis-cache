@@ -12,7 +12,8 @@
 # For every round we query the database for all the names (defaults to 20 of them),
 # and tracks the amount of time required to return the data. We run these same queries
 # with and without Redis caching, for 20 rounds. Then we average out the time 
-# needed to return the data. 
+# needed to return the data. All queries are query.lean(), meaning all documents 
+# returned are NOT casted as Mongoose models. 
 # 
 
 
@@ -72,7 +73,7 @@ TestItemSchema = new Schema
   friends: [String]
   name: 
     type: String
-    index: true
+    index: true # Index the Name field for query
 
 # Set schema to include caching
 TestItemSchema.set 'redisCache', true
@@ -182,7 +183,12 @@ before (done) ->
   @timeout 60000
   clearDb ->    
     console.log "Generating #{itemsCount} mocks..."
-    generateMocks itemsCount, done
+    generateMocks itemsCount, (err) ->
+      if err then throw err
+
+      # Make sure the data is indexed in DB for testing
+      TestItem.ensureIndexes done
+
 
 # Start test for queries without caching
 describe "Mongoose queries without caching", ->

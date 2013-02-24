@@ -124,7 +124,12 @@ before(function(done) {
   this.timeout(60000);
   return clearDb(function() {
     console.log("Generating " + itemsCount + " mocks...");
-    return generateMocks(itemsCount, done);
+    return generateMocks(itemsCount, function(err) {
+      if (err) {
+        throw err;
+      }
+      return TestItem.ensureIndexes(done);
+    });
   });
 });
 

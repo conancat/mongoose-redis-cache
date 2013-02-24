@@ -1,10 +1,33 @@
 {
   "name": "mongoose-redis-cache",
-  "version": "0.0.0",
-  "description": "Cache Mongoose MongoDB requests in Redis",
+  "version": "0.0.1",
+  "description": "Plugin to cache Mongoose MongoDB query results in Redis",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "license": "BSD"
+  "license": "BSD",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "redis": "~0.8.2",
+    "underscore": "~1.4.4"
+  },
+  "devDependencies": {
+    "mocha": "~1.8.1",
+    "async": "~0.2.5",
+    "mongoose": "~3.5.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/conancat/mongoose-redis-cache.git"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "redis",
+    "cache"
+  ],
+  "author": "Grey Ang"
 }
