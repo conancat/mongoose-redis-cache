@@ -9,13 +9,13 @@ First, the usual:
 
 Then, 
 
-    1. Setup mongoose connect as usual: 
+    Setup mongoose connect as usual: 
 
        var mongoose = require("mongoose");
        var mongooseRedisCache = require("mongoose-redis-cache");
        mongoose.connect("mongodb://localhost/mongoose-redis-test")
 
-    2. Create your schemas as usual: 
+    Create your schemas as usual: 
 
        var ExampleSchema = new Schema(function(){
           field1: String
@@ -23,7 +23,7 @@ Then,
           field3: Date
        });
      
-    3. Enable redisCache on the schema! 
+    Enable redisCache on the schema! 
        
        REQUIRED: Enable Redis caching on this schema by specifying
 
@@ -33,11 +33,11 @@ Then,
      
            ExampleSchema.set('expires', 30)
 
-    4. Register the schema as usual: 
+    Register the schema as usual: 
          
          Example = mongoose.model('Example', ExampleSchema)
 
-    5. Setup your mongooseCache options
+    Setup your mongooseCache options:
 
         # If you're running this locally, 
         mongooseRedisCache(mongoose)
@@ -50,12 +50,12 @@ Then,
            options: "redisOptions"
          })
      
-    6. Make a query! 
+    Make a query as usual:
          
         query = Example.find({}) 
         query.where("field1", "foo")
         query.where("field2").gte(30)
-        query.lean()  REQUIRED, Redis cache only works for query.lean() queries!
+        query.lean()  mongooseRedisCache only works for query.lean() queries!
         query.exec(function(err, result){
             Do whatever here! 
         });
@@ -126,6 +126,50 @@ speed when reading the data. This is AFTER indexing in MongoDB.
 
 Cool for high-volume data reading! 
 
+## API
+
+### Setup
+
+    # If you're running this locally, 
+    mongooseRedisCache(mongoose)
+
+    # Or if you're running a remote Redis DB
+    mongooseRedisCache(mongoose, {
+       host: "redisHost",
+       port: "redisPort",
+       pass: "redisPass",
+       options: "redisOptions"
+     })
+
+### `redisCache: Boolean` 
+
+    ExampleSchema.set('redisCache', true)
+
+REQUIRED
+Call this function on whatever collection you want to cache. You don't have to use this on every collection, 
+right? Pick and choose your collections wisely, you shall. 
+
+### `expires: Number`
+
+    ExampleSchema.set('expires', 30)
+
+OPTIONAL
+Set the expiry time for the Redis key in seconds. Defaults to 60. 
+
+
+### query.lean()
+
+    query = Example.find({})
+    query.lean()
+    query.exec(function(err, results){
+      # Your results here #
+    })
+
+REQUIRED
+Just a reminder. Be sure to call this whenever you want the results to be cached! More info \
+about [query.lean()](http://mongoosejs.com/docs/api.html#query_Query-lean) here.
+
+Yeah, that's it. What else did you expect? Meh. 
 
 ## How to Run Test
 
@@ -147,6 +191,24 @@ The usual jazz:
     cd tests
     mocha
 
+### How the tests are run
+
+#### Mock data
+We generate a set number of mock data in the DB (defaults to 30000 items). 
+Each item contains a random person's name, some arbitary number as random data, a date, and 
+n array for the person's friend.
+
+For testing purposes, we also called `ensureIndex()` on MongoDB to make sure we index
+the field we want to query. 
+
+#### Execute test rounds
+For every round we query the database for all the names (defaults to 20 of them),
+and tracks the amount of time required to return the data. Each query returns around 1100 documents per call. 
+We run these same queries with and without Redis caching, for 20 rounds. Then we average out the time 
+needed to return the data. 
+
+All queries are query.lean(), meaning all documents returned are NOT casted as Mongoose models.
+This gives us fair comparison between Redis caching and direct MongoDB queries. 
 
 ## These awesome people!
 
