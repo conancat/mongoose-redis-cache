@@ -104,7 +104,7 @@ Check out the test example for more information.
 
 ### What is a Mongoose `lean` query? 
 
-[Mongoose](http://mongoosejs.com), the MongoDB ODM for NodeJS has an awesome feature which casts each document 
+[Mongoose](http://mongoosejs.com), the MongoDB ORM for NodeJS has an awesome feature which casts each document 
 as a Mongoose [model](http://mongoosejs.com/docs/models.html). This allows awesome features like being able to call `model.save()` or `model.remove()` on each document directly, which makes coding much easier. 
 
 At the same time, Mongoose also casts each value in every document returned from MongoDB to their [schema types](http://mongoosejs.com/docs/guide.html), which makes sure your database value types stays consistent. 
