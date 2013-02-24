@@ -7,53 +7,7 @@ _ = require "underscore"
 # We cache the original mongoose.Query.prototype.execFind function, 
 # and replace it with this version that utilizes Redis caching. 
 # 
-# How to use: 
-# 1. Setup mongoose connect as usual: 
-#
-#   mongoose = require("mongoose");
-#   mongoose.connect("mongodb://localhost/mongoose-redis-test")
-#
-# 2. Create your schemas as usual: 
-#
-#   var ExampleSchema = new Schema(function(){
-#      field1: String
-#      field2: Number
-#      field3: Date
-#   });
-# 
-# 3. Enable redisCache on the schema! 
-#   
-#   REQUIRED: Enable Redis caching on this schema by specifying
-#
-#       ExampleSchema.set('redisCache', true)
-#
-#   OPTIONAL: Change the time for the cache of this schema. Defaults to 60 seconds. 
-# 
-#       ExampleSchema.set('expires', 30)
-#
-# 4. Register the schema as usual: 
-#     
-#     Example = mongoose.model('Example', ExampleSchema)
-#
-# 5. Setup your mongooseCache options
-#
-#    mongooseRedisCache = require("mongoose-redis-cache");
-#    mongooseRedisCache(mongoose, {
-#       host: "redisHost",
-#       port: "redisPort",
-#       pass: "redisPass",
-#       options: "redisOptions"
-#     })
-# 
-# 6. Make a query! 
-#     
-#    query = Example.find({}) 
-#    query.where("field1", "foo")
-#    query.where("field2").gte(30)
-#    query.lean() # REQUIRED, Redis cache only works for query.lean() queries!
-#    query.exec(function(err, result){
-#       # Do whatever here! 
-#    });
+# For more information, get on to the readme.md! 
 
 
 # Let's start the party!

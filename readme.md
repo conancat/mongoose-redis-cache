@@ -39,6 +39,10 @@ Then,
 
     5. Setup your mongooseCache options
 
+        # If you're running this locally, 
+        mongooseRedisCache(mongoose)
+
+        # Or if you're running a remote Redis DB
         mongooseRedisCache(mongoose, {
            host: "redisHost",
            port: "redisPort",
