@@ -123,6 +123,27 @@ speed when reading the data. This is AFTER indexing in MongoDB.
 Cool for high-volume data reading! 
 
 
+## How to Run Test
+
+Try testing this on your machine and let me know how it went for you! 
+
+The usual jazz: 
+
+    # Clone em!
+    git clone https://github.com/conancat/mongoose-redis-cache.git
+    
+    # Install those packages
+    cd mongoose-redis-cache
+    npm install
+
+    # If you don't have Mocha installed already
+    npm install mocha -g 
+
+    # Yeah, just get in there and get on it
+    cd tests
+    mocha
+
+
 ## These awesome people!
 
 More resources: 
