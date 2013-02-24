@@ -212,8 +212,6 @@ This gives us fair comparison between Redis caching and direct MongoDB queries.
 
 ## These awesome people!
 
-More resources: 
-
 * [mongoose](https://github.com/LearnBoost/mongoose)
 * [node-redis](https://github.com/mranney/node_redis)
 
