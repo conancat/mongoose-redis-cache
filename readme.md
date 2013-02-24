@@ -128,7 +128,7 @@ Cool for high-volume data reading!
 
 ## API
 
-### Setup
+### Setting up
 
     # If you're running this locally, 
     mongooseRedisCache(mongoose)
@@ -141,7 +141,7 @@ Cool for high-volume data reading!
        options: "redisOptions"
      })
 
-### `redisCache: Boolean` 
+### redisCache: Boolean 
 
     ExampleSchema.set('redisCache', true)
 
@@ -149,7 +149,7 @@ REQUIRED
 Call this function on whatever collection you want to cache. You don't have to use this on every collection, 
 right? Pick and choose your collections wisely, you shall. 
 
-### `expires: Number`
+### expires: Number
 
     ExampleSchema.set('expires', 30)
 
@@ -166,7 +166,7 @@ Set the expiry time for the Redis key in seconds. Defaults to 60.
     })
 
 REQUIRED
-Just a reminder. Be sure to call this whenever you want the results to be cached! More info \
+Just a reminder. Be sure to call this whenever you want the results to be cached! More info
 about [query.lean()](http://mongoosejs.com/docs/api.html#query_Query-lean) here.
 
 Yeah, that's it. What else did you expect? Meh. 
