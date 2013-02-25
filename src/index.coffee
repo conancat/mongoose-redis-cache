@@ -54,8 +54,6 @@ mongooseRedisCache = (mongoose, options) ->
 
     key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields)
     
-    arr = []
-    
     cb = (err, result) ->
       if not result
         # If the key is not found in Redis, executes Mongoose original 
@@ -70,7 +68,7 @@ mongooseRedisCache = (mongoose, options) ->
       else
         # Key is found, yay! Return the baby! 
         docs = JSON.parse(result)
-        return callback null, arr
+        return callback null, docs
       
     client.get key, cb
 

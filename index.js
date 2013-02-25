@@ -20,7 +20,7 @@ mongooseRedisCache = function(mongoose, options) {
   }
   mongoose.Query.prototype._execFind = mongoose.Query.prototype.execFind;
   mongoose.Query.prototype.execFind = function(callback) {
-    var arr, cb, expires, fields, key, model, query, schemaOptions, self;
+    var cb, expires, fields, key, model, query, schemaOptions, self;
     self = this;
     model = this.model;
     query = this._conditions;
@@ -32,7 +32,6 @@ mongooseRedisCache = function(mongoose, options) {
       return mongoose.Query.prototype._execFind.apply(self, arguments);
     }
     key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields);
-    arr = [];
     cb = function(err, result) {
       var docs;
       if (!result) {
@@ -48,7 +47,7 @@ mongooseRedisCache = function(mongoose, options) {
         });
       } else {
         docs = JSON.parse(result);
-        return callback(null, arr);
+        return callback(null, docs);
       }
     };
     client.get(key, cb);
