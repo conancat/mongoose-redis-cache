@@ -64,7 +64,7 @@ mongooseRedisCache = (mongoose, options) ->
           str = JSON.stringify docs
           client.set key, str
           client.expire key, expires
-          callback null, arr
+          callback null, docs
       else
         # Key is found, yay! Return the baby! 
         docs = JSON.parse(result)

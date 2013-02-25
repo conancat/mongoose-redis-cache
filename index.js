@@ -43,7 +43,7 @@ mongooseRedisCache = function(mongoose, options) {
           str = JSON.stringify(docs);
           client.set(key, str);
           client.expire(key, expires);
-          return callback(null, arr);
+          return callback(null, docs);
         });
       } else {
         docs = JSON.parse(result);
