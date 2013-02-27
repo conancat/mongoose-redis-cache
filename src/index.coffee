@@ -21,7 +21,7 @@ mongooseRedisCache = (mongoose, options) ->
   pass = options.pass || ""
   redisOptions = options.options || {}
 
-  mongoose.redisClient = client = redis.createClient host, port, redisOptions
+  mongoose.redisClient = client = redis.createClient port, host, redisOptions
 
   if pass.length > 0
     client.auth pass
