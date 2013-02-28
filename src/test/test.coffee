@@ -25,10 +25,10 @@ _ = require "underscore"
 mongooseRedisCache = require "../index"
 
 # Some test variables, feel free to change this to play around
-itemsCount = 30000
-testRounds = 30
-cacheExpires = 5
-timeout = 1000 * 10
+itemsCount = 100
+testRounds = 5
+cacheExpires = 60
+timeout = 1000 * 30
 
 totalTimeWithoutRedis = 0
 totalTimeWithRedis = 0
@@ -62,7 +62,8 @@ maxQueriesCount = mockNames.length
 # BEGIN SETTING UP
 
 # Setup Mongoose as usual
-mongoose.connect("mongodb://localhost/mongoose-redis-test")
+mongoose.connect("mongodb://test:abcd1234@ds037987.mongolab.com:37987/mongoose-redis-test")
+# mongoose.connect("mongodb://localhost/mongoose-redis-test")
 
 # Setup test item schema
 TestItemSchema = new Schema 
@@ -87,29 +88,22 @@ clearDb = (callback) ->
   TestItem.remove callback
 
 # GENERATE MOCK DATA
-
 # Just a random function to generate mockup data in DB
 generateMocks = (amount, callback) ->
   count = 0
+  items = []
 
-  test = ->
-    count < amount
-
-  fn = (cb) ->
-    TestItem.create
+  while count < amount
+    items.push 
       name: mockNames[Math.floor(Math.random() * mockNames.length)]
       num1: Math.random() * 10000
       num2: Math.random() * 10000
       num3: Math.random() * 10000
       friends: _.shuffle(mockNames)[0...Math.floor(Math.random() * 5)]
-    , (err) ->
-      if err then return cb err
-      count++  
-      cb null
+    count++
 
-  async.whilst test
-  , fn
-  , callback
+  TestItem.create items, callback
+
 
 # RUN TEST ROUND
 
@@ -179,7 +173,6 @@ before (done) ->
 
   """
 
-
   @timeout 60000
   clearDb ->    
     console.log "Generating #{itemsCount} mocks..."
@@ -192,7 +185,6 @@ before (done) ->
 
 # Start test for queries without caching
 describe "Mongoose queries without caching", ->
-
   before ->
     console.log """
       \n--------------------------------
@@ -216,19 +208,21 @@ describe "Mongoose queries without caching", ->
 
     totalTimeWithoutRedis = totalTime
 
-
 # Start test for queries with caching
 describe "Mongoose queries with caching", ->
   before ->
     # Setup mongooseRedisCache
-    mongooseRedisCache mongoose
-
-    console.log """
-      \n--------------------------------
-      Test query with Redis caching
-      --------------------------------
-      Begin executing queries with Redis caching
-    """
+    mongooseRedisCache mongoose,
+      host: "proxy.openredis.com"
+      port: 11406
+      pass: "BNX8dYfmpAjm52b8dtBcB0lPij4dbZT0PmNurfNCNHmGGPy7Zq8SBR6ejezls11r"
+    , (err) ->
+      console.log """
+        \n--------------------------------
+        Test query with Redis caching
+        --------------------------------
+        Begin executing queries with Redis caching
+      """
   
   totalTime = 0
 

@@ -11,13 +11,13 @@ _ = require("underscore");
 
 mongooseRedisCache = require("../index");
 
-itemsCount = 30000;
+itemsCount = 100;
 
-testRounds = 30;
+testRounds = 5;
 
-cacheExpires = 5;
+cacheExpires = 60;
 
-timeout = 1000 * 10;
+timeout = 1000 * 30;
 
 totalTimeWithoutRedis = 0;
 
@@ -27,7 +27,7 @@ mockNames = ["Jacob", "Sophia", "Mason", "Isabella", "William", "Emma", "Jayden"
 
 maxQueriesCount = mockNames.length;
 
-mongoose.connect("mongodb://localhost/mongoose-redis-test");
+mongoose.connect("mongodb://test:abcd1234@ds037987.mongolab.com:37987/mongoose-redis-test");
 
 TestItemSchema = new Schema({
   num1: Number,
@@ -55,27 +55,20 @@ clearDb = function(callback) {
 };
 
 generateMocks = function(amount, callback) {
-  var count, fn, test;
+  var count, items;
   count = 0;
-  test = function() {
-    return count < amount;
-  };
-  fn = function(cb) {
-    return TestItem.create({
+  items = [];
+  while (count < amount) {
+    items.push({
       name: mockNames[Math.floor(Math.random() * mockNames.length)],
       num1: Math.random() * 10000,
       num2: Math.random() * 10000,
       num3: Math.random() * 10000,
       friends: _.shuffle(mockNames).slice(0, Math.floor(Math.random() * 5))
-    }, function(err) {
-      if (err) {
-        return cb(err);
-      }
-      count++;
-      return cb(null);
     });
-  };
-  return async.whilst(test, fn, callback);
+    count++;
+  }
+  return TestItem.create(items, callback);
 };
 
 runTestRound = function(callback) {
@@ -158,8 +151,13 @@ describe("Mongoose queries without caching", function() {
 describe("Mongoose queries with caching", function() {
   var count, totalTime, _i;
   before(function() {
-    mongooseRedisCache(mongoose);
-    return console.log("\n--------------------------------\nTest query with Redis caching\n--------------------------------\nBegin executing queries with Redis caching");
+    return mongooseRedisCache(mongoose, {
+      host: "proxy.openredis.com",
+      port: 11406,
+      pass: "BNX8dYfmpAjm52b8dtBcB0lPij4dbZT0PmNurfNCNHmGGPy7Zq8SBR6ejezls11r"
+    }, function(err) {
+      return console.log("\n--------------------------------\nTest query with Redis caching\n--------------------------------\nBegin executing queries with Redis caching");
+    });
   });
   totalTime = 0;
   for (count = _i = 1; 1 <= testRounds ? _i <= testRounds : _i >= testRounds; count = 1 <= testRounds ? ++_i : --_i) {

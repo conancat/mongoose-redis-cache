@@ -5,7 +5,7 @@ redis = require("redis");
 
 _ = require("underscore");
 
-mongooseRedisCache = function(mongoose, options) {
+mongooseRedisCache = function(mongoose, options, callback) {
   var client, host, pass, port, redisOptions;
   if (options == null) {
     options = {};
@@ -16,7 +16,11 @@ mongooseRedisCache = function(mongoose, options) {
   redisOptions = options.options || {};
   mongoose.redisClient = client = redis.createClient(port, host, redisOptions);
   if (pass.length > 0) {
-    client.auth(pass);
+    client.auth(pass, function(err) {
+      if (callback) {
+        return callback(err);
+      }
+    });
   }
   mongoose.Query.prototype._execFind = mongoose.Query.prototype.execFind;
   mongoose.Query.prototype.execFind = function(callback) {
@@ -34,6 +38,9 @@ mongooseRedisCache = function(mongoose, options) {
     key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields);
     cb = function(err, result) {
       var docs;
+      if (err) {
+        return callback(err);
+      }
       if (!result) {
         return mongoose.Query.prototype._execFind.call(self, function(err, docs) {
           var str;

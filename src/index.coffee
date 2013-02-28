@@ -12,7 +12,7 @@ _ = require "underscore"
 
 # Let's start the party!
 
-mongooseRedisCache = (mongoose, options) ->
+mongooseRedisCache = (mongoose, options, callback) ->
   options ?= {}
 
   # Setup redis with options provided
@@ -24,7 +24,8 @@ mongooseRedisCache = (mongoose, options) ->
   mongoose.redisClient = client = redis.createClient port, host, redisOptions
 
   if pass.length > 0
-    client.auth pass
+    client.auth pass, (err) -> 
+      if callback then return callback err
 
   # Cache original execFind function so that 
   # we can use it later
@@ -55,6 +56,8 @@ mongooseRedisCache = (mongoose, options) ->
     key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields)
     
     cb = (err, result) ->
+      if err then return callback err
+
       if not result
         # If the key is not found in Redis, executes Mongoose original 
         # execFind() function and then cache the results in Redis
