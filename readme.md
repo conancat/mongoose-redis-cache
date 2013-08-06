@@ -60,6 +60,10 @@ Then,
             Do whatever here! 
         });
 
+    Use nocache option to disable caching for the given query:
+
+        query = Example.find({}).setOptions({nocache: true})
+
 Check out the test example for more information. 
 
 ## Test results: 
