@@ -145,6 +145,12 @@ Cool for high-volume data reading!
        options: "redisOptions"
      })
 
+    # You can also configure redis prefix
+    # It'll allow you to create several completely isolated caches
+    mongooseRedisCache(mongoose, {
+       prefix: "cache1"
+     })
+
 ### redisCache: Boolean
 
     ExampleSchema.set('redisCache', true)
