@@ -56,6 +56,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
     query = @_conditions || {}
     options = @_optionsForExec(model) || {}
     fields = _.clone(@_fields) || {}
+    populate = @options.populate || {}
 
     schemaOptions = model.schema.options
     collectionName = model.collection.name
@@ -72,6 +73,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
       .update(JSON.stringify query)
       .update(JSON.stringify options)
       .update(JSON.stringify fields)
+      .update(JSON.stringify populate)
       .digest('hex')
 
     key = [prefix, collectionName, hash].join ':'

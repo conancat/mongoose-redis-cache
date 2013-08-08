@@ -41,12 +41,13 @@ mongooseRedisCache = function(mongoose, options, callback) {
   }
   mongoose.Query.prototype._execFind = mongoose.Query.prototype.execFind;
   mongoose.Query.prototype.execFind = function(callback) {
-    var cb, collectionName, expires, fields, hash, key, model, query, schemaOptions, self;
+    var cb, collectionName, expires, fields, hash, key, model, populate, query, schemaOptions, self;
     self = this;
     model = this.model;
     query = this._conditions || {};
     options = this._optionsForExec(model) || {};
     fields = _.clone(this._fields) || {};
+    populate = this.options.populate || {};
     schemaOptions = model.schema.options;
     collectionName = model.collection.name;
     expires = schemaOptions.expires || 60;
@@ -54,7 +55,7 @@ mongooseRedisCache = function(mongoose, options, callback) {
       return mongoose.Query.prototype._execFind.apply(self, arguments);
     }
     delete options.nocache;
-    hash = crypto.createHash('md5').update(JSON.stringify(query)).update(JSON.stringify(options)).update(JSON.stringify(fields)).digest('hex');
+    hash = crypto.createHash('md5').update(JSON.stringify(query)).update(JSON.stringify(options)).update(JSON.stringify(fields)).update(JSON.stringify(populate)).digest('hex');
     key = [prefix, collectionName, hash].join(':');
     cb = function(err, result) {
       var docs;
