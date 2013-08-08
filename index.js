@@ -32,7 +32,7 @@ mongooseRedisCache = function(mongoose, options, callback) {
     fields = _.clone(this._fields);
     schemaOptions = model.schema.options;
     expires = schemaOptions.expires || 60;
-    if (!schemaOptions.redisCache && !options.nocache && options.lean) {
+    if (!(schemaOptions.redisCache && !options.nocache && options.lean)) {
       return mongoose.Query.prototype._execFind.apply(self, arguments);
     }
     delete options.nocache;
