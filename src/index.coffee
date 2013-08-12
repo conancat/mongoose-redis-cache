@@ -1,5 +1,6 @@
 # Some module requires
 redis = require "redis"
+crypto = require "crypto"
 _ = require "underscore"
 
 # Begin the happy thing!
@@ -9,6 +10,16 @@ _ = require "underscore"
 # 
 # For more information, get on to the readme.md! 
 
+
+# We need RegExp::toJSON to serialize queries with reqular expressions
+
+RegExp::toJSON = ->
+  json = $regexp: @source
+  str = @toString()
+  ind = str.lastIndexOf '/'
+  opts = str.slice ind + 1
+  json.$options = opts if opts.length > 0
+  json
 
 # Let's start the party!
 
@@ -20,6 +31,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
   port = options.port || ""
   pass = options.pass || ""
   redisOptions = options.options || {}
+  prefix = options.prefix || "cache"
 
   mongoose.redisClient = client = redis.createClient port, host, redisOptions
 
@@ -41,11 +53,13 @@ mongooseRedisCache = (mongoose, options, callback) ->
   mongoose.Query::execFind = (callback) ->
     self = this    
     model = @model
-    query = @_conditions
-    options = @_optionsForExec(model)
-    fields = _.clone @_fields
+    query = @_conditions || {}
+    options = @_optionsForExec(model) || {}
+    fields = _.clone(@_fields) || {}
+    populate = @options.populate || {}
 
     schemaOptions = model.schema.options
+    collectionName = model.collection.name
     expires = schemaOptions.expires || 60
 
     # We only use redis cache of user specified to use cache on the schema,
@@ -55,8 +69,15 @@ mongooseRedisCache = (mongoose, options, callback) ->
 
     delete options.nocache
 
-    key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields)
-    
+    hash = crypto.createHash('md5')
+      .update(JSON.stringify query)
+      .update(JSON.stringify options)
+      .update(JSON.stringify fields)
+      .update(JSON.stringify populate)
+      .digest('hex')
+
+    key = [prefix, collectionName, hash].join ':'
+
     cb = (err, result) ->
       if err then return callback err
 
