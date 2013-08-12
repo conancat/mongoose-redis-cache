@@ -67,8 +67,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
         mongoose.Query::_execFind.call self, (err, docs) ->
           if err then return callback err
           str = JSON.stringify docs
-          client.set key, str
-          client.expire key, expires
+          client.setex key, expires, str
           callback null, docs
       else
         # Key is found, yay! Return the baby! 
