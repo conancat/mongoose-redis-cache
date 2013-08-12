@@ -1,25 +1,25 @@
 # Test case for Mongoose-Redis Cache
 
-# Testing methodology: 
+# Testing methodology:
 #
-# Mock data: 
-# We generate a set number of mock data in the DB. Defaults to 30000 items. 
-# Each item contains a random person's name, some arbitary number as data, a date, and 
-# an array for the person's friend. We index the name field to optimize 
-# MongoDB's performance. 
+# Mock data:
+# We generate a set number of mock data in the DB. Defaults to 30000 items.
+# Each item contains a random person's name, some arbitary number as data, a date, and
+# an array for the person's friend. We index the name field to optimize
+# MongoDB's performance.
 #
 # Execute test rounds:
 # For every round we query the database for all the names (defaults to 20 of them),
 # and tracks the amount of time required to return the data. We run these same queries
-# with and without Redis caching, for 20 rounds. Then we average out the time 
-# needed to return the data. All queries are query.lean(), meaning all documents 
-# returned are NOT casted as Mongoose models. 
-# 
+# with and without Redis caching, for 20 rounds. Then we average out the time
+# needed to return the data. All queries are query.lean(), meaning all documents
+# returned are NOT casted as Mongoose models.
+#
 
 
 # Just some basic requires and stuff
 mongoose = require "mongoose"
-{Schema} = mongoose 
+{Schema} = mongoose
 async = require "async"
 _ = require "underscore"
 mongooseRedisCache = require "../index"
@@ -66,13 +66,13 @@ mongoose.connect("mongodb://test:abcd1234@ds037987.mongolab.com:37987/mongoose-r
 # mongoose.connect("mongodb://localhost/mongoose-redis-test")
 
 # Setup test item schema
-TestItemSchema = new Schema 
+TestItemSchema = new Schema
   num1: Number
   num2: Number
   num3: Number
   date: {type: String, default: Date.now()}
   friends: [String]
-  name: 
+  name:
     type: String
     index: true # Index the Name field for query
 
@@ -94,7 +94,7 @@ generateMocks = (amount, callback) ->
   items = []
 
   while count < amount
-    items.push 
+    items.push
       name: mockNames[Math.floor(Math.random() * mockNames.length)]
       num1: Math.random() * 10000
       num2: Math.random() * 10000
@@ -123,12 +123,12 @@ runTestRound = (callback) ->
   fn = (cb) ->
     queryStartTime = new Date()
 
-    query = TestItem.find {}    
+    query = TestItem.find {}
     query.where "name", mockNames[currQueryCount]
-    
+
     # Making sure it's a lean call!
     query.lean()
-    
+
     query.exec (err, result) ->
       if err then throw err
 
@@ -154,7 +154,7 @@ runTestRound = (callback) ->
     callback null,
       totalTime: totalTime
       averageTime: averageTime
-    
+
   async.whilst test, fn, cb
 
 
@@ -163,7 +163,7 @@ runTestRound = (callback) ->
 # Clear database before starting, then generate mock data
 before (done) ->
   console.log """
-    
+
     =========================
     Mongoose-Redis Cache Test
     =========================
@@ -174,7 +174,7 @@ before (done) ->
   """
 
   @timeout 60000
-  clearDb ->    
+  clearDb ->
     console.log "Generating #{itemsCount} mocks..."
     generateMocks itemsCount, (err) ->
       if err then throw err
@@ -223,7 +223,7 @@ describe "Mongoose queries with caching", ->
         --------------------------------
         Begin executing queries with Redis caching
       """
-  
+
   totalTime = 0
 
   for count in [1..testRounds]
@@ -240,7 +240,7 @@ describe "Mongoose queries with caching", ->
     totalTimeWithRedis = totalTime
 
 
-# Done test! 
+# Done test!
 after (done) ->
 
   console.log """
@@ -248,7 +248,7 @@ after (done) ->
   CONCLUSION
   ------------
   Caching with Redis makes Mongoose lean queries faster by #{totalTimeWithoutRedis - totalTimeWithRedis} ms.
-  That's #{(totalTimeWithoutRedis / totalTimeWithRedis * 100).toFixed(2)}% faster!  
+  That's #{(totalTimeWithoutRedis / totalTimeWithRedis * 100).toFixed(2)}% faster!
   """
 
 
