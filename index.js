@@ -38,11 +38,18 @@ mongooseRedisCache = function(mongoose, options, callback) {
     delete options.nocache;
     key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields);
     cb = function(err, result) {
-      var docs;
+      var docs, k, path;
       if (err) {
         return callback(err);
       }
       if (!result) {
+        for (k in populate) {
+          path = populate[k];
+          path.options || (path.options = {});
+          _.defaults(path.options, {
+            nocache: true
+          });
+        }
         return mongoose.Query.prototype._execFind.call(self, function(err, docs) {
           var str;
           if (err) {

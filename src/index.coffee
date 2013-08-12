@@ -64,6 +64,10 @@ mongooseRedisCache = (mongoose, options, callback) ->
         # If the key is not found in Redis, executes Mongoose original 
         # execFind() function and then cache the results in Redis
 
+        for k, path of populate
+          path.options ||= {}
+          _.defaults path.options, nocache: true
+
         mongoose.Query::_execFind.call self, (err, docs) ->
           if err then return callback err
           str = JSON.stringify docs
