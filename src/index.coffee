@@ -4,7 +4,7 @@ _ = require "underscore"
 
 # Begin the happy thing!
 # How we do it: 
-# We cache the original mongoose.Query.prototype.execFind function, 
+# We cache the original mongoose.Query.prototype.exec function, 
 # and replace it with this version that utilizes Redis caching. 
 # 
 # For more information, get on to the readme.md! 
@@ -27,9 +27,9 @@ mongooseRedisCache = (mongoose, options, callback) ->
     client.auth pass, (err) -> 
       if callback then return callback err
 
-  # Cache original execFind function so that 
+  # Cache original exec function so that 
   # we can use it later
-  mongoose.Query::_execFind = mongoose.Query::execFind
+  mongoose.Query::_exec = mongoose.Query::exec
 
   # Replace original function with this version that utilizes
   # Redis caching when executing finds. 
@@ -38,7 +38,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
   # Also this will only enabled if user had specified cache: true option 
   # when creating the Mongoose Schema object! 
 
-  mongoose.Query::execFind = (callback) ->
+  mongoose.Query::exec = (callback) ->
     self = this    
     model = @model
     query = @_conditions
@@ -51,7 +51,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
     # We only use redis cache of user specified to use cache on the schema,
     # and it will only execute if the call is a lean call.
     unless schemaOptions.redisCache and not options.nocache and options.lean
-      return mongoose.Query::_execFind.apply self, arguments
+      return mongoose.Query::_exec.apply self, arguments
 
     delete options.nocache
 
@@ -62,9 +62,9 @@ mongooseRedisCache = (mongoose, options, callback) ->
 
       if not result
         # If the key is not found in Redis, executes Mongoose original 
-        # execFind() function and then cache the results in Redis
+        # exec() function and then cache the results in Redis
 
-        mongoose.Query::_execFind.call self, (err, docs) ->
+        mongoose.Query::_exec.call self, (err, docs) ->
           if err then return callback err
           str = JSON.stringify docs
           client.setex key, expires, str

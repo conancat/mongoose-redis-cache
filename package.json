@@ -11,13 +11,13 @@
     "test": "test"
   },
   "dependencies": {
-    "redis": "~0.8.2",
-    "underscore": "~1.4.4"
+    "redis": "~0.10.0",
+    "underscore": "~1.5.2"
   },
   "devDependencies": {
-    "mocha": "~1.8.1",
-    "async": "~0.2.5",
-    "mongoose": "~3.5.7"
+    "mocha": "~1.17.0",
+    "async": "~0.2.9",
+    "mongoose": "~3.8.4"
   },
   "repository": {
     "type": "git",

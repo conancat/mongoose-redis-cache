@@ -22,8 +22,8 @@ mongooseRedisCache = function(mongoose, options, callback) {
       }
     });
   }
-  mongoose.Query.prototype._execFind = mongoose.Query.prototype.execFind;
-  mongoose.Query.prototype.execFind = function(callback) {
+  mongoose.Query.prototype._exec = mongoose.Query.prototype.exec;
+  mongoose.Query.prototype.exec = function(callback) {
     var cb, expires, fields, key, model, query, schemaOptions, self;
     self = this;
     model = this.model;
@@ -33,7 +33,7 @@ mongooseRedisCache = function(mongoose, options, callback) {
     schemaOptions = model.schema.options;
     expires = schemaOptions.expires || 60;
     if (!(schemaOptions.redisCache && !options.nocache && options.lean)) {
-      return mongoose.Query.prototype._execFind.apply(self, arguments);
+      return mongoose.Query.prototype._exec.apply(self, arguments);
     }
     delete options.nocache;
     key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields);
@@ -43,7 +43,7 @@ mongooseRedisCache = function(mongoose, options, callback) {
         return callback(err);
       }
       if (!result) {
-        return mongoose.Query.prototype._execFind.call(self, function(err, docs) {
+        return mongoose.Query.prototype._exec.call(self, function(err, docs) {
           var str;
           if (err) {
             return callback(err);
