@@ -50,7 +50,7 @@ mongooseRedisCache = (mongoose, options, callback) ->
 
     # We only use redis cache of user specified to use cache on the schema,
     # and it will only execute if the call is a lean call.
-    unless schemaOptions.redisCache and not options.nocache and options.lean
+    unless schemaOptions.redisCache and not options.nocache and @_mongooseOptions.lean
       return mongoose.Query::_exec.apply self, arguments
 
     delete options.nocache
