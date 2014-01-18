@@ -177,7 +177,7 @@ describe("Mongoose queries with caching", function() {
 });
 
 after(function(done) {
-  console.log("------------\nCONCLUSION\n------------\nCaching with Redis makes Mongoose lean queries faster by " + (totalTimeWithoutRedis - totalTimeWithRedis) + " ms.\nThat's " + ((totalTimeWithoutRedis / totalTimeWithRedis * 100).toFixed(2)) + "% faster!  ");
+  console.log("------------\nCONCLUSION\n------------\nCaching with Redis makes Mongoose lean queries faster by " + (totalTimeWithoutRedis - totalTimeWithRedis) + " ms.\nThat's " + ((totalTimeWithoutRedis / totalTimeWithRedis * 100).toFixed(2)) + "% faster!");
   console.log("\n\nEnd tests. \nWiping DB and exiting");
   return clearDb(done);
 });

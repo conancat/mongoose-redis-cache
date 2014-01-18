@@ -1,6 +1,6 @@
 {
   "name": "mongoose-redis-cache",
-  "version": "0.0.3",
+  "version": "0.0.3+patch.1",
   "description": "Plugin to cache Mongoose MongoDB query results in Redis",
   "main": "index.js",
   "scripts": {

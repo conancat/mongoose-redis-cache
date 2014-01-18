@@ -4,7 +4,7 @@ sys = require 'util'
 printOutput = (process) ->
   process.stdout.on 'data', (data) -> sys.print data
   process.stderr.on 'data', (data) -> sys.print data
-  
+
 watchJS = (service) ->
   coffee = exec 'coffee -cwb -o ./ src/'
   printOutput(coffee)
