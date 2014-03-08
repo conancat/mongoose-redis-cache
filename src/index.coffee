@@ -64,10 +64,11 @@ mongooseRedisCache = (mongoose, options, callback) ->
 
     # We only use redis cache of user specified to use cache on the schema,
     # and it will only execute if the call is a lean call.
-    unless schemaOptions.redisCache and options.cache and @_mongooseOptions.lean
+    unless schemaOptions.redisCache and @_mongooseOptions.redisCache and @_mongooseOptions.lean
+      delete @_mongooseOptions.redisCache
       return mongoose.Query::_exec.apply self, arguments
 
-    delete options.cache
+    delete @_mongooseOptions.redisCache
 
     hash = crypto.createHash('md5')
       .update(JSON.stringify query)
