@@ -51,10 +51,10 @@ mongooseRedisCache = function(mongoose, options, callback) {
     schemaOptions = model.schema.options;
     collectionName = model.collection.name;
     expires = schemaOptions.expires || 60;
-    if (!(schemaOptions.redisCache && !options.nocache && this._mongooseOptions.lean)) {
+    if (!(schemaOptions.redisCache && options.cache && this._mongooseOptions.lean)) {
       return mongoose.Query.prototype._exec.apply(self, arguments);
     }
-    delete options.nocache;
+    delete options.cache;
     hash = crypto.createHash('md5').update(JSON.stringify(query)).update(JSON.stringify(options)).update(JSON.stringify(fields)).update(JSON.stringify(populate)).digest('hex');
     key = [prefix, collectionName, hash].join(':');
     cb = function(err, result) {
@@ -67,7 +67,7 @@ mongooseRedisCache = function(mongoose, options, callback) {
           path = populate[k];
           path.options || (path.options = {});
           _.defaults(path.options, {
-            nocache: true
+            cache: false
           });
         }
         return mongoose.Query.prototype._exec.call(self, function(err, docs) {
