@@ -60,17 +60,17 @@ mongooseRedisCache = (mongoose, options, callback) ->
 
     schemaOptions = model.schema.options
     collectionName = model.collection.name
-    expires = @_mongooseOption.expires || schemaOptions.expires || 60
+    expires = @_mongooseOption.redisExpires || schemaOptions.expires || 60
 
     # We only use redis cache of user specified to use cache on the schema,
     # and it will only execute if the call is a lean call.
     unless schemaOptions.redisCache and @_mongooseOptions.redisCache and @_mongooseOptions.lean
       delete @_mongooseOptions.redisCache
-      delete @_mongooseOptions.expires
+      delete @_mongooseOptions.redisExpires
       return mongoose.Query::_exec.apply self, arguments
 
     delete @_mongooseOptions.redisCache
-    delete @_mongooseOptions.expires
+    delete @_mongooseOptions.redixExpires
 
     hash = crypto.createHash('md5')
       .update(JSON.stringify query)

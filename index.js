@@ -50,14 +50,14 @@ mongooseRedisCache = function(mongoose, options, callback) {
     populate = this.options.populate || {};
     schemaOptions = model.schema.options;
     collectionName = model.collection.name;
-    expires = this._mongooseOption.expires || schemaOptions.expires || 60;
+    expires = this._mongooseOption.redisExpires || schemaOptions.expires || 60;
     if (!(schemaOptions.redisCache && this._mongooseOptions.redisCache && this._mongooseOptions.lean)) {
       delete this._mongooseOptions.redisCache;
-      delete this._mongooseOptions.expires;
+      delete this._mongooseOptions.redisExpires;
       return mongoose.Query.prototype._exec.apply(self, arguments);
     }
     delete this._mongooseOptions.redisCache;
-    delete this._mongooseOptions.expires;
+    delete this._mongooseOptions.redixExpires;
     hash = crypto.createHash('md5').update(JSON.stringify(query)).update(JSON.stringify(options)).update(JSON.stringify(fields)).update(JSON.stringify(populate)).digest('hex');
     key = [prefix, collectionName, hash].join(':');
     cb = function(err, result) {
