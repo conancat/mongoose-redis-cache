@@ -50,7 +50,7 @@ mongooseRedisCache = function(mongoose, options, callback) {
     populate = this.options.populate || {};
     schemaOptions = model.schema.options;
     collectionName = model.collection.name;
-    expires = this._mongooseOption.redisExpires || schemaOptions.expires || 60;
+    expires = this._mongooseOptions.redisExpires || schemaOptions.expires || 60;
     if (!(schemaOptions.redisCache && this._mongooseOptions.redisCache && this._mongooseOptions.lean)) {
       delete this._mongooseOptions.redisCache;
       delete this._mongooseOptions.redisExpires;
