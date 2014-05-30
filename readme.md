@@ -2,6 +2,12 @@
 
 Plugin to cache Mongoose MongoDB query results in Redis. Lean DB queries, at least 300% faster!
 
+## 30/5/2014 - A note about this project
+
+Sorry guys that I haven't been around to maintain this project! This project has not been actively maintained and I'm terribly sorry for that. 
+
+I would love to have someone to help as active contributors to this project, if you're interested please do email me at conancat@gmail.com, and we'll work something out! Thank you so much guys!! 
+
 ## How to use
 First, the usual:
 
