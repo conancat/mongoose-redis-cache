@@ -162,16 +162,15 @@ Cool for high-volume data reading!
 	mongooseRedisCache(mongoose, {
        cache: true
      })
-REQUIRED
-Set cache to true if you need to enable caching.
-This is different from the original branch
 
+OPTIONAL 
+Set cache to true if you need to enable caching for all collections. 
 
 ### redisCache: Boolean
 
     ExampleSchema.set('redisCache', true)
 
-REQUIRED
+OPTIONAL 
 Call this function on whatever collection you want to cache. You don't have to use this on every collection,
 right? Pick and choose your collections wisely, you shall.
 
